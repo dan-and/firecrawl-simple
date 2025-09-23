@@ -2,7 +2,7 @@ import { WebCrawler } from "../scraper/WebScraper/crawler";
 import { redisConnection } from "../services/queue-service";
 
 export type StoredCrawl = {
-  originUrl: string;
+  originUrl?: string;
   crawlerOptions: any;
   pageOptions: any;
   team_id: string;
@@ -131,7 +131,7 @@ export async function lockURLs(id: string, urls: string[]): Promise<boolean> {
 export function crawlToCrawler(id: string, sc: StoredCrawl): WebCrawler {
   const crawler = new WebCrawler({
     jobId: id,
-    initialUrl: sc.originUrl,
+    initialUrl: sc.originUrl || "",
     includes: sc.crawlerOptions?.includes ?? [],
     excludes: sc.crawlerOptions?.excludes ?? [],
     maxCrawledLinks: sc.crawlerOptions?.maxCrawledLinks ?? 1000,

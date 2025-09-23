@@ -3,6 +3,7 @@ import { RateLimiterMode } from "../types";
 import { authenticateUser } from "../controllers/auth";
 import { crawlController } from "../controllers/v1/crawl";
 import { scrapeController } from "../../src/controllers/v1/scrape";
+import { bulkScrapeController } from "../controllers/v1/bulk-scrape";
 import { crawlStatusController } from "../controllers/v1/crawl-status";
 import { mapController } from "../controllers/v1/map";
 import { RequestWithMaybeAuth } from "../controllers/v1/types";
@@ -74,10 +75,22 @@ v1Router.post(
   wrap(crawlController)
 );
 
+v1Router.post(
+  "/bulk/scrape",
+  authMiddleware(RateLimiterMode.Crawl),
+  wrap(bulkScrapeController)
+);
+
 v1Router.post("/map", authMiddleware(RateLimiterMode.Map), wrap(mapController));
 
 v1Router.get(
   "/crawl/:jobId",
+  authMiddleware(RateLimiterMode.CrawlStatus),
+  wrap(crawlStatusController)
+);
+
+v1Router.get(
+  "/bulk/scrape/:jobId",
   authMiddleware(RateLimiterMode.CrawlStatus),
   wrap(crawlStatusController)
 );

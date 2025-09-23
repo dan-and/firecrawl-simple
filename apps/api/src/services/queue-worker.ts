@@ -181,7 +181,7 @@ async function processJob(job: Job, token: string) {
 
       const sc = (await getCrawl(job.data.crawl_id)) as StoredCrawl;
 
-      if (!job.data.sitemapped) {
+      if (!job.data.sitemapped && job.data.crawlerOptions !== null) {
         if (!sc.cancelled) {
           const crawler = crawlToCrawler(job.data.crawl_id, sc);
 
@@ -222,7 +222,9 @@ async function processJob(job: Job, token: string) {
         }
       }
 
-      await finishCrawl(job.data.crawl_id);
+      if (await finishCrawl(job.data.crawl_id) && job.data.crawlerOptions !== null) {
+        // Crawl finished logic would go here
+      }
     }
 
     Logger.info(`🐂 Job done ${job.id}`);

@@ -78,6 +78,13 @@ export const scrapeRequestSchema = scrapeOptions
 
 export type ScrapeRequest = z.infer<typeof scrapeRequestSchema>;
 
+export const bulkScrapeRequestSchema = scrapeOptions.extend({
+  urls: url.array(),
+  origin: z.string().optional().default("api"),
+}).strict(strictMessage);
+
+export type BulkScrapeRequest = z.infer<typeof bulkScrapeRequestSchema>;
+
 const crawlerOptions = z
   .object({
     includePaths: z.string().array().default([]),
