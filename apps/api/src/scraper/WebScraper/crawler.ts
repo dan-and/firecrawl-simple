@@ -65,6 +65,18 @@ export class WebCrawler {
     const response = await axios.get(this.robotsTxtUrl, {
       timeout: axiosTimeout,
     });
+    
+    // Check content-type to filter out HTML error pages
+    const contentType = Object.entries(response.headers).find(
+      (x) => x[0].toLowerCase() === "content-type",
+    )?.[1] ?? "";
+
+    if ((contentType.includes("text/html") && response.data.trim().startsWith("<")) || 
+        contentType.includes("application/json") ||
+        contentType.includes("application/xml")) {
+      return "";
+    }
+    
     return response.data;
   }
 
