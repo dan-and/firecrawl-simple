@@ -108,7 +108,7 @@ export async function lockURL(
 ): Promise<boolean> {
   if (typeof sc.crawlerOptions?.limit === "number") {
     if (
-      (await redisConnection.scard("crawl:" + id + ":visited")) >=
+      (await redisConnection.scard("crawl:" + id + ":visited_unique")) >=
       sc.crawlerOptions.limit
     ) {
       return false;
@@ -117,6 +117,12 @@ export async function lockURL(
   const res =
     (await redisConnection.sadd("crawl:" + id + ":visited", url)) !== 0;
   await redisConnection.expire("crawl:" + id + ":visited", 24 * 60 * 60, "NX");
+  
+  if (res) {
+    await redisConnection.sadd("crawl:" + id + ":visited_unique", url);
+    await redisConnection.expire("crawl:" + id + ":visited_unique", 24 * 60 * 60, "NX");
+  }
+  
   return res;
 }
 
@@ -125,6 +131,12 @@ export async function lockURLs(id: string, urls: string[]): Promise<boolean> {
   const res =
     (await redisConnection.sadd("crawl:" + id + ":visited", ...urls)) !== 0;
   await redisConnection.expire("crawl:" + id + ":visited", 24 * 60 * 60, "NX");
+  
+  if (res) {
+    await redisConnection.sadd("crawl:" + id + ":visited_unique", ...urls);
+    await redisConnection.expire("crawl:" + id + ":visited_unique", 24 * 60 * 60, "NX");
+  }
+  
   return res;
 }
 
