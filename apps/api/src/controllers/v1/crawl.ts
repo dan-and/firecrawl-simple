@@ -92,7 +92,11 @@ export async function crawlController(
 ) {
   req.body = crawlRequestSchema.parse(req.body);
 
-  Logger.debug(`[Crawl] Request: ${JSON.stringify(req.body)}`);
+  Logger.debug(`[Crawl] Request received`, { 
+    body: req.body, 
+    teamId: req.auth.team_id,
+    plan: req.auth.plan 
+  });
 
   const id = uuidv4();
 
@@ -135,9 +139,8 @@ export async function crawlController(
     sc.robots = await crawler.getRobotsTxt();
   } catch (e) {
     Logger.debug(
-      `[Crawl] Failed to get robots.txt (this is probably fine!): ${JSON.stringify(
-        e
-      )}`
+      `[Crawl] Failed to get robots.txt (this is probably fine!)`, 
+      { error: e.message, url: req.body.url }
     );
   }
 
@@ -153,7 +156,11 @@ export async function crawlController(
     const limit = crawlerOptions.limit || 10000;
     const limitedSitemap = sitemap.slice(0, limit);
     
-    Logger.debug(`[Crawl] Sitemap found with ${sitemap.length} URLs, limiting to ${limit} URLs`);
+    Logger.debug(`[Crawl] Sitemap found with URLs, applying limit`, { 
+      totalUrls: sitemap.length, 
+      limit: limit,
+      limitedUrls: limitedSitemap.length 
+    });
     
     let jobPriority = 20;
     // If it is over 1000, we need to get the job priority,

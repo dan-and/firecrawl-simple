@@ -120,7 +120,11 @@ const workerFun = async (
 workerFun(scrapeQueueName, processJobInternal);
 
 async function processJob(job: Job, token: string) {
-  Logger.info(`🐂 Worker taking job ${job.id}`);
+  Logger.info(`🐂 Worker taking job`, { 
+    jobId: job.id, 
+    url: job.data.url,
+    mode: job.data.mode 
+  });
 
   if (
     job.data.url &&
@@ -128,7 +132,11 @@ async function processJob(job: Job, token: string) {
       job.data.url.includes("ebay.com") ||
       job.data.url.includes("youtube.com"))
   ) {
-    Logger.info(`🐂 Blocking job ${job.id} with URL ${job.data.url}`);
+    Logger.info(`🐂 Blocking job with blocked URL`, { 
+      jobId: job.id, 
+      url: job.data.url,
+      reason: "blocked_domain" 
+    });
     const data = {
       success: false,
       docs: [],
@@ -197,7 +205,10 @@ async function processJob(job: Job, token: string) {
                 team_id: sc.team_id,
                 basePriority: job.data.crawl_id ? 20 : 10,
               });
-              Logger.debug(`🐂 Adding scrape job for link ${link}`);
+              Logger.debug(`🐂 Adding scrape job for link`, { 
+                link: link,
+                crawlId: job.data.crawl_id 
+              });
               const newJob = await addScrapeJobRaw(
                 {
                   url: link,
