@@ -149,10 +149,16 @@ export async function crawlController(
       : await crawler.tryGetSitemap();
 
   if (sitemap !== null && sitemap.length > 0) {
+    // FIX: Respect the limit parameter when processing sitemap URLs
+    const limit = crawlerOptions.limit || 10000;
+    const limitedSitemap = sitemap.slice(0, limit);
+    
+    Logger.debug(`[Crawl] Sitemap found with ${sitemap.length} URLs, limiting to ${limit} URLs`);
+    
     let jobPriority = 20;
     // If it is over 1000, we need to get the job priority,
     // otherwise we can use the default priority of 20
-    if (sitemap.length > 1000) {
+    if (limitedSitemap.length > 1000) {
       // set base to 21
       jobPriority = await getJobPriority({
         plan: req.auth.plan,
@@ -160,7 +166,7 @@ export async function crawlController(
         basePriority: 21,
       });
     }
-    const jobs = sitemap.map((x) => {
+    const jobs = limitedSitemap.map((x) => {
       const url = x.url;
       const uuid = uuidv4();
       return {
