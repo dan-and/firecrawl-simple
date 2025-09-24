@@ -12,7 +12,6 @@ describe("Rate Limiter Service", () => {
     try {
       await redisRateLimitClient.connect();
       // if (process.env.REDIS_RATE_LIMIT_URL === "redis://localhost:6379") {
-      //   console.log("Erasing all keys");
       //   // erase all the keys that start with "test-prefix"
       //   const keys = await redisRateLimitClient.keys("test-prefix:*");
       //   if (keys.length > 0) {

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { promises as fs } from "fs";
 import { v4 as uuidV4 } from "uuid";
+import { Logger } from "./lib/logger";
 
 interface Result {
   start_url: string;
@@ -29,21 +30,20 @@ async function getStartUrls(): Promise<Result[]> {
     const data = await fs.readFile("starturls.json", "utf-8");
     return JSON.parse(data);
   } catch (error) {
-    console.error("Error reading starturls.json:", error);
+    Logger.error("Error reading starturls.json", { error: error.message });
     return [];
   }
 }
 
 async function main() {
   const results: Result[] = (await getStartUrls()).slice(3999, 6000);
-  // console.log(results.map((r) => r.start_url).slice(0, 3));
 
   processResults(results)
     .then(() => {
-      console.log("All results processed.");
+      Logger.info("All results processed.");
     })
     .catch((error) => {
-      console.error("Error processing results:", error);
+      Logger.error("Error processing results", { error: error.message });
     });
 }
 

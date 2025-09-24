@@ -20,7 +20,7 @@ export async function authenticateUser(
 }
 function setTrace(team_id: string, api_key: string) {
   try {
-    console.log("Setting trace attributes");
+    Logger.debug("Setting trace attributes");
   } catch (error) {
     Logger.error(`Error setting trace attributes: ${error.message}`);
   }

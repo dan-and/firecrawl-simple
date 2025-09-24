@@ -107,7 +107,7 @@ export async function scrapeController(
   await job.remove();
 
   if (!doc) {
-    console.error("!!! PANIC DOC IS", doc, job);
+    Logger.error("Panic: Document processing failed", { doc, job: job.id });
     return res.status(200).json({
       success: true,
       warning: "No page found",

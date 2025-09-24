@@ -60,7 +60,7 @@ const processJobInternal = async (token: string, job: Job) => {
       await job.moveToCompleted(result.docs, token, false);
     } catch (e) {}
   } catch (error) {
-    console.log("Job failed, error:", error);
+    Logger.error("Job failed", { error: error.message, jobId: job.id });
     err = error;
     await job.moveToFailed(error, token, false);
   } finally {
@@ -74,7 +74,7 @@ const processJobInternal = async (token: string, job: Job) => {
 let isShuttingDown = false;
 
 process.on("SIGINT", () => {
-  console.log("Received SIGINT. Shutting down gracefully...");
+  Logger.info("Received SIGINT. Shutting down gracefully...");
   isShuttingDown = true;
 });
 
@@ -95,13 +95,13 @@ const workerFun = async (
 
   while (true) {
     if (isShuttingDown) {
-      console.log("No longer accepting new jobs. SIGINT");
+      Logger.info("No longer accepting new jobs. SIGINT");
       break;
     }
     const token = uuidv4();
     const canAcceptConnection = await monitor.acceptConnection();
     if (!canAcceptConnection) {
-      console.log("Cant accept connection");
+      Logger.warn("Cannot accept connection");
       await sleep(cantAcceptConnectionInterval);
       continue;
     }

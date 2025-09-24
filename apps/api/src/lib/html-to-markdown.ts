@@ -85,7 +85,7 @@ export async function parseMarkdown(html: string): Promise<string> {
 
     return markdownContent;
   } catch (error) {
-    console.error("Error converting HTML to Markdown: ", error);
+    Logger.error("Error converting HTML to Markdown", { error: error.message });
     return ""; // Optionally return an empty string or handle the error as needed
   }
 }
