@@ -79,6 +79,7 @@ export async function scrapeController(
       pageOptions,
       origin: req.body.origin,
       is_scrape: true,
+      crawl_id: jobId,
     },
     {},
     jobId,

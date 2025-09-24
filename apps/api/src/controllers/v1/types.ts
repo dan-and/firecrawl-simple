@@ -164,6 +164,7 @@ export type Document = {
     articleSection?: string;
     sourceURL?: string;
     statusCode?: number;
+    scrapeId?: string;
     error?: string;
   };
 };
@@ -298,6 +299,7 @@ export function legacyDocumentConverter(doc: any): Document {
       pageStatusCode: undefined,
       error: doc.metadata.pageError,
       statusCode: doc.metadata.pageStatusCode,
+      scrapeId: doc.metadata.scrapeId,
     },
   };
 }

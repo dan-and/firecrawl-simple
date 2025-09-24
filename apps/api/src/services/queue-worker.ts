@@ -176,7 +176,7 @@ async function processJob(job: Job, token: string) {
       docs,
     };
 
-    if (job.data.crawl_id) {
+    if (job.data.crawl_id && !job.data.is_scrape) {
       await addCrawlJobDone(job.data.crawl_id, job.id);
 
       const sc = (await getCrawl(job.data.crawl_id)) as StoredCrawl;

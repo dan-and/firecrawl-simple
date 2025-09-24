@@ -294,6 +294,7 @@ export async function scrapeSingleUrl(
           pageStatusCode: pageStatusCode,
           statusCode: pageStatusCode,
           pageError: pageError,
+          scrapeId: scrapeId,
         },
       };
     } else {
@@ -311,6 +312,7 @@ export async function scrapeSingleUrl(
           pageStatusCode: pageStatusCode,
           statusCode: pageStatusCode,
           pageError: pageError,
+          scrapeId: scrapeId,
         },
         linksOnPage: pageOptions.includeLinks ? linksOnPage : undefined,
       };
